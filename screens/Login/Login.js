@@ -9,10 +9,10 @@ import {
   Alert,
   Button,
 } from 'react-native';
-import {login} from '../../store/actions/auth';
+import {login, facebooklogin} from '../../store/actions/auth';
 import PropTypes from 'prop-types';
 
-const Login = ({login}) => {
+const Login = ({login, facebooklogin}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +24,10 @@ const Login = ({login}) => {
     }
     await login(email, password);
     //redirect to main screen
+  };
+
+  const onLoginWithFacebookPress = async () => {
+    await facebooklogin();
   };
 
   return (
@@ -52,7 +56,11 @@ const Login = ({login}) => {
             <Button onPress={() => onLoginPress()} title="Login" />
           </View>
           <View style={styles.fbLoginButton}>
-            <Button title="Login with Facebook" color="#0074D9" />
+            <Button
+              title="Login with Facebook"
+              onPress={() => onLoginWithFacebookPress()}
+              color="#0074D9"
+            />
           </View>
         </View>
       </View>
@@ -108,4 +116,4 @@ Login.propTypes = {
   login: PropTypes.func.isRequired,
 };
 
-export default connect(null, {login})(Login);
+export default connect(null, {login, facebooklogin})(Login);

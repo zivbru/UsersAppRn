@@ -2,8 +2,9 @@ import {setAlert} from './alert';
 import '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
 import {AUTHENTICATE} from '../types';
+const FBSDK = require('react-native-fbsdk');
+const {LoginManager, AccessToken} = FBSDK;
 
 export const authenticate = (user) => (dispatch) => {
   dispatch({type: AUTHENTICATE, user});
@@ -57,6 +58,48 @@ export const login = (email, password) => async (dispatch) => {
     console.log('error', error);
     if (error) {
       dispatch(setAlert('Wrong Credentials', 'danger'));
+    }
+  }
+};
+
+export const facebooklogin = () => async (dispatch) => {
+  try {
+    console.log('facebooklogin');
+    const result = await LoginManager.logInWithPermissions([
+      'public_profile',
+      'email',
+    ]);
+
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    const accessToken = data.accessToken;
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      accessToken,
+    );
+
+    const response = await auth().signInWithCredential(facebookCredential);
+    const user = response.user;
+    const userDict = {
+      id: user.uid,
+      fullname: user.displayName,
+      email: user.email,
+      profileURL: user.photoURL,
+    };
+
+    firebase.firestore().collection('users').doc(user.uid).set(userDict);
+    dispatch(authenticate(user._data));
+  } catch (error) {
+    console.log(error);
+    if (error) {
+      dispatch(setAlert('Please try again! ' + error, 'danger'));
     }
   }
 };
