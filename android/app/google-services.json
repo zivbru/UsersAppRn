@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "33702797500",
+    "firebase_url": "https://reactnativeusersapp-61f16.firebaseio.com",
+    "project_id": "reactnativeusersapp-61f16",
+    "storage_bucket": "reactnativeusersapp-61f16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33702797500:android:0f5fbf04c0df4afc12b0b9",
+        "android_client_info": {
+          "package_name": "com.usersapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "33702797500-8hkm8i961d0ujnk67iv5p4foh1chmu46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiT8UIkhUvgiVgoWGRZmQJ_R_fNVmpTW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "33702797500-8hkm8i961d0ujnk67iv5p4foh1chmu46.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
