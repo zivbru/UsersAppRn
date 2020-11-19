@@ -12,7 +12,7 @@ import {
 import {login, facebooklogin} from '../../store/actions/auth';
 import PropTypes from 'prop-types';
 
-const Login = ({login, facebooklogin}) => {
+const Login = ({login, facebooklogin, auth, navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +25,9 @@ const Login = ({login, facebooklogin}) => {
     await login(email, password);
     //redirect to main screen
   };
+  // if (auth.isLoggedIn) {
+  //   navigation.navigate('Users');
+  // }
 
   const onLoginWithFacebookPress = async () => {
     await facebooklogin();
@@ -114,6 +117,10 @@ const styles = StyleSheet.create({
 
 Login.propTypes = {
   login: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
-export default connect(null, {login, facebooklogin})(Login);
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, {login, facebooklogin})(Login);

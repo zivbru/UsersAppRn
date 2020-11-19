@@ -20,7 +20,6 @@ export const register = (fullName, phone, email, password) => async (
     );
 
     const userId = response.user._user.uid;
-
     const data = {
       email,
       fullName,
@@ -94,8 +93,8 @@ export const facebooklogin = () => async (dispatch) => {
       profileURL: user.photoURL,
     };
 
-    firebase.firestore().collection('users').doc(user.uid).set(userDict);
-    dispatch(authenticate(user._data));
+    firestore().collection('users').doc(user.uid).set(userDict);
+    dispatch(authenticate(user));
   } catch (error) {
     console.log(error);
     if (error) {

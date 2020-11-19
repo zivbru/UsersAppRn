@@ -1,13 +1,13 @@
 import React from 'react';
-import {Platform} from 'react-native';
-
 import {createStackNavigator} from '@react-navigation/stack';
 import SignUpScreen from '../screens/SignUp/SignUp';
 import LoginScreen from '../screens/Login/Login';
+import WelcomeScreen from '../screens/Welocome/Welcome';
+import UsersScreen from '../screens/Users/Users';
 
 const defaultNavigationOptions = {
   headerStyle: {
-    backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : '',
+    backgroundColor: '#001f3f',
   },
   headerTitleStyle: {
     fontFamily: 'sans-serif',
@@ -16,41 +16,25 @@ const defaultNavigationOptions = {
   headerBackTitle: {
     fontFamily: 'sans-serif',
   },
-  headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primaryColor,
+  headerTintColor: '#7FDBFF',
 };
 
 const AuthStackNavigator = createStackNavigator();
-const AuthNavigator = () => {
+export const AuthNavigator = () => {
   return (
     <AuthStackNavigator.Navigator screenOptions={defaultNavigationOptions}>
+      <AuthStackNavigator.Screen name="Welcome" component={WelcomeScreen} />
       <AuthStackNavigator.Screen name="Login" component={LoginScreen} />
       <AuthStackNavigator.Screen name="SignUp" component={SignUpScreen} />
     </AuthStackNavigator.Navigator>
   );
 };
 
-const RootNavigator = createStackNavigator(
-  {
-    AuthStack: {screen: AuthNavigator},
-  },
-  {
-    // Default config for all screens
-    headerMode: 'none',
-    initialRouteName: 'AuthStack',
-    // transitionConfig: noTransitionConfig,
-    navigationOptions: ({navigation}) => ({
-      color: 'black',
-    }),
-  },
-);
-
-const styles = StyleSheet.create({
-  headerTitleStyle: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    alignSelf: 'center',
-    color: 'black',
-    flex: 1,
-    fontFamily: AppStyles.fontName.main,
-  },
-});
+const UsersStackNavigator = createStackNavigator();
+export const UsersNavigator = () => {
+  return (
+    <UsersStackNavigator.Navigator screenOptions={defaultNavigationOptions}>
+      <AuthStackNavigator.Screen name="Users" component={UsersScreen} />
+    </UsersStackNavigator.Navigator>
+  );
+};

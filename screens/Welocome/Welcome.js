@@ -3,22 +3,20 @@ import {StyleSheet, Text, View} from 'react-native';
 import {AppStyles} from '../../components/UI/AppStyles';
 import Button from 'react-native-button';
 
-const Welcome = () => {
+const Welcome = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}></Text>
+      <Text style={styles.title}>Title</Text>
       <Button
         containerStyle={styles.loginContainer}
         style={styles.loginText}
-        // onPress={() => this.props.navigation.navigate('Login')}
-      >
+        onPress={() => navigation.navigate('Login')}>
         Log In
       </Button>
       <Button
         containerStyle={styles.signupContainer}
         style={styles.signupText}
-        // onPress={() => this.props.navigation.navigate('Signup')}
-      >
+        onPress={() => navigation.navigate('SignUp')}>
         Sign Up
       </Button>
     </View>
