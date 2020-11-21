@@ -1,4 +1,4 @@
-import {AUTHENTICATE} from '../types';
+import {AUTHENTICATE, LOGOUT} from '../types';
 
 const initialState = {
   user: null,
@@ -10,8 +10,15 @@ export default (state = initialState, action) => {
     case AUTHENTICATE:
       return {
         ...state,
-        user: action.user,
+        user: JSON.stringify(action.user),
         isLoggedIn: true,
+      };
+
+    case LOGOUT:
+      return {
+        ...state,
+        user: null,
+        isLoggedIn: false,
       };
     default:
       return state;

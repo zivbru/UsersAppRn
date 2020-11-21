@@ -1,30 +1,47 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
+import {connect} from 'react-redux';
+import {fetchUserById} from '../../store/actions/users';
+import PropTypes from 'prop-types';
 import {AppStyles} from '../../components/UI/AppStyles';
 import Button from 'react-native-button';
-import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
-import {register} from '../../store/actions/auth';
+import {useSelector, useDispatch} from 'react-redux';
 
-const SignUp = ({register}) => {
-  const [fullName, setFullname] = useState();
-  const [phone, setPhone] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+const CreateNewUser = ({route, fetchUserById}) => {
+  const selectedUser = useSelector((state) =>
+    state.users.users.find((user) => user.id === route.params.id),
+  );
+  const title = route.params.title;
 
-  const onRegister = async () => {
-    await register(fullName, phone, email, password);
-    //redirect to main screen
+  const [fullName, setFullname] = useState(
+    selectedUser ? selectedUser.fullName : '',
+  );
+
+  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : '');
+  const [email, setEmail] = useState(selectedUser ? selectedUser.email : '');
+  const [password, setPassword] = useState(
+    selectedUser ? selectedUser.password : '',
+  );
+
+  const onSave = () => {
+    if (title === 'Create') {
+    } else {
+    }
   };
-
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, styles.leftTitle]}>Create new account</Text>
+      <Text style={[styles.title, styles.leftTitle]}>{title} User</Text>
       <View style={styles.InputContainer}>
         <TextInput
           style={styles.body}
           placeholder="Full Name"
-          onChangeText={setFullname}
+          onChangeText={(text) => setFullname(text)}
           value={fullName}
           placeholderTextColor={AppStyles.color.grey}
           underlineColorAndroid="transparent"
@@ -67,8 +84,8 @@ const SignUp = ({register}) => {
       <Button
         containerStyle={[styles.facebookContainer, {marginTop: 50}]}
         style={styles.facebookText}
-        onPress={() => onRegister()}>
-        Sign Up
+        onPress={() => onSave()}>
+        Save
       </Button>
     </View>
   );
@@ -138,8 +155,12 @@ const styles = StyleSheet.create({
   },
 });
 
-SignUp.propTypes = {
-  register: PropTypes.func.isRequired,
+CreateNewUser.propTypes = {
+  fetchUserById: PropTypes.func.isRequired,
 };
 
-export default connect(null, {register})(SignUp);
+const mapStateToProps = (state) => ({
+  // selectedUser: state.users.selectedUser,
+});
+
+export default connect(null, {fetchUserById})(CreateNewUser);

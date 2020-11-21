@@ -1,12 +1,67 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {AppStyles} from '../../components/UI/AppStyles';
+import {connect} from 'react-redux';
 import Button from 'react-native-button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import {setAlert} from '../../store/actions/alert';
+import {authenticate} from '../../store/actions/auth';
+import PropTypes from 'prop-types';
 
-const Welcome = ({navigation}) => {
+const Welcome = ({navigation, authenticate}) => {
+  const tryToLoginFirst = async () => {
+    try {
+      let user;
+      const email = await AsyncStorage.getItem('@loggedInUserID:email');
+      const password = await AsyncStorage.getItem('@loggedInUserID:password');
+      const id = await AsyncStorage.getItem('@loggedInUserID:id');
+      if (
+        id != null &&
+        id.length > 0 &&
+        password != null &&
+        password.length > 0
+      ) {
+        const response = auth().signInWithEmailAndPassword(email, password);
+        user = response.user;
+        if (user && user._data) {
+          authenticate(user._data);
+        } else {
+          setAlert('User does not exist. Please try again.', 'danger');
+        }
+      }
+
+      const accessToken = await AsyncStorage.getItem(
+        '@loggedInUserID:facebookCredentialAccessToken',
+      );
+      if (
+        id != null &&
+        id.length > 0 &&
+        accessToken != null &&
+        accessToken.length > 0
+      ) {
+        const facebookCredential = auth.FacebookAuthProvider.credential(
+          accessToken,
+        );
+        const response = await auth().signInWithCredential(facebookCredential);
+        user = response.user;
+        authenticate(user);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error) {
+        setAlert('Please try again! ' + error, 'danger');
+      }
+    }
+  };
+
+  useEffect(() => {
+    tryToLoginFirst();
+  }, [tryToLoginFirst]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Title</Text>
+      <Text style={styles.title}>Welcome</Text>
       <Button
         containerStyle={styles.loginContainer}
         style={styles.loginText}
@@ -23,7 +78,11 @@ const Welcome = ({navigation}) => {
   );
 };
 
-export default Welcome;
+Welcome.propTypes = {
+  authenticate: PropTypes.func.isRequired,
+};
+
+export default connect(null, {authenticate})(Welcome);
 
 const styles = StyleSheet.create({
   container: {

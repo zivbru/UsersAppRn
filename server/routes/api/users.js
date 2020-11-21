@@ -22,6 +22,25 @@ router.get('/', [], async (req, res) => {
   }
 });
 
+// @route GET api/users/:id
+// @desc get user by id
+// @access Public
+
+router.get('/:id', [], async (req, res) => {
+  try {
+    const response = await usersTable.doc(req.params.id).get();
+    if (!response.exists) {
+      return res.status(404).send('ID not found!');
+    } else {
+      user = response.data();
+      res.json(user);
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('Server error');
+  }
+});
+
 // @route POST api/users
 // @desc Create user
 // @access Public
@@ -45,7 +64,6 @@ router.post('/', [], async (req, res) => {
       phone: req.body.phone,
       fullName: req.body.fullName,
     };
-    console.log(newUser);
 
     await usersTable.add(newUser);
     res.json(newUser);
@@ -55,6 +73,10 @@ router.post('/', [], async (req, res) => {
   }
 });
 
+// @route POST api/users
+// @desc Edit user
+// @access Public
+
 router.post('/:id', [], async (req, res) => {
   try {
     let user;
@@ -63,7 +85,6 @@ router.post('/:id', [], async (req, res) => {
     if (!response.exists) {
       return res.status(404).send('ID not found!');
     } else {
-      console.log(response.data());
       user = response.data();
     }
 
@@ -80,6 +101,10 @@ router.post('/:id', [], async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
+// @route DELETE api/users/:id
+// @desc Delete user by id
+// @access Public
 
 router.delete('/:id', [], async (req, res) => {
   try {

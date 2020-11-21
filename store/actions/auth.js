@@ -2,9 +2,10 @@ import {setAlert} from './alert';
 import '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {AUTHENTICATE} from '../types';
+import {AUTHENTICATE, LOGOUT} from '../types';
 const FBSDK = require('react-native-fbsdk');
 const {LoginManager, AccessToken} = FBSDK;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const authenticate = (user) => (dispatch) => {
   dispatch({type: AUTHENTICATE, user});
@@ -30,6 +31,9 @@ export const register = (fullName, phone, email, password) => async (
 
     const user = await firestore().collection('users').doc(userId).get();
     if (user && user._data) {
+      AsyncStorage.setItem('@loggedInUserID:id', userId);
+      AsyncStorage.setItem('@loggedInUserID:email', email);
+      AsyncStorage.setItem('@loggedInUserID:password', password);
       dispatch(authenticate(user._data));
     } else {
       dispatch(setAlert('Something went wrong.', 'danger'));
@@ -49,6 +53,10 @@ export const login = (email, password) => async (dispatch) => {
     const user = await firestore().collection('users').doc(userId).get();
 
     if (user && user._data) {
+      AsyncStorage.setItem('@loggedInUserID:id', userId);
+      AsyncStorage.setItem('@loggedInUserID:email', email);
+      AsyncStorage.setItem('@loggedInUserID:password', password);
+
       dispatch(authenticate(user._data));
     } else {
       dispatch(setAlert('User does not exist. Please try again.', 'danger'));
@@ -63,7 +71,6 @@ export const login = (email, password) => async (dispatch) => {
 
 export const facebooklogin = () => async (dispatch) => {
   try {
-    console.log('facebooklogin');
     const result = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
@@ -88,17 +95,38 @@ export const facebooklogin = () => async (dispatch) => {
     const user = response.user;
     const userDict = {
       id: user.uid,
-      fullname: user.displayName,
+      fullName: user.displayName,
       email: user.email,
       profileURL: user.photoURL,
+      phone: '',
     };
 
     firestore().collection('users').doc(user.uid).set(userDict);
+    AsyncStorage.setItem(
+      '@loggedInUserID:facebookCredentialAccessToken',
+      accessToken,
+    );
+    AsyncStorage.setItem('@loggedInUserID:id', user.uid);
+
     dispatch(authenticate(user));
   } catch (error) {
     console.log(error);
     if (error) {
       dispatch(setAlert('Please try again! ' + error, 'danger'));
+    }
+  }
+};
+
+export const logout = () => async (dispatch) => {
+  try {
+    AsyncStorage.removeItem('@loggedInUserID:id');
+    AsyncStorage.removeItem('@loggedInUserID:key');
+    AsyncStorage.removeItem('@loggedInUserID:password');
+    dispatch({type: LOGOUT});
+  } catch (error) {
+    console.log(error);
+    if (error) {
+      dispatch(setAlert('Could Not logout!', 'danger'));
     }
   }
 };

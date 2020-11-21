@@ -12,8 +12,7 @@ import {
 import {login, facebooklogin} from '../../store/actions/auth';
 import PropTypes from 'prop-types';
 
-const Login = ({login, facebooklogin, auth, navigation}) => {
-  const [isLoading, setIsLoading] = useState(false);
+const Login = ({login, facebooklogin}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,11 +22,7 @@ const Login = ({login, facebooklogin, auth, navigation}) => {
       return;
     }
     await login(email, password);
-    //redirect to main screen
   };
-  // if (auth.isLoggedIn) {
-  //   navigation.navigate('Users');
-  // }
 
   const onLoginWithFacebookPress = async () => {
     await facebooklogin();
