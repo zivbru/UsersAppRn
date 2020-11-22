@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {fetchUserById} from '../../store/actions/users';
 import PropTypes from 'prop-types';
@@ -7,6 +13,7 @@ import {AppStyles} from '../../components/UI/AppStyles';
 import Button from 'react-native-button';
 import {useSelector} from 'react-redux';
 import {createNewUser, editUser} from '../../store/actions/users';
+import validateFields from '../../utils/validation';
 
 const CreateNewUser = ({route, navigation, createNewUser, editUser}) => {
   const title = route.params.title;
@@ -14,12 +21,16 @@ const CreateNewUser = ({route, navigation, createNewUser, editUser}) => {
     state.users.users.find((user) => user.id === route.params.id),
   );
   const [fullName, setFullname] = useState(
-    selectedUser ? selectedUser.fullName : '',
+    selectedUser && title !== 'Create' ? selectedUser.fullName : '',
   );
-  const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : '');
-  const [email, setEmail] = useState(selectedUser ? selectedUser.email : '');
+  const [phone, setPhone] = useState(
+    selectedUser && title !== 'Create' ? selectedUser.phone : '',
+  );
+  const [email, setEmail] = useState(
+    selectedUser && title !== 'Create' ? selectedUser.email : '',
+  );
   const [password, setPassword] = useState(
-    selectedUser ? selectedUser.password : '',
+    selectedUser && title !== 'Create' ? selectedUser.password : '',
   );
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,14 +40,24 @@ const CreateNewUser = ({route, navigation, createNewUser, editUser}) => {
     });
   }, [navigation]);
 
-  const onSave = async () => {
+  const onSave = () => {
+    const msg = validateFields(email, phone, password);
+    if (msg) {
+      alert(msg);
+      return;
+    }
     setIsLoading(true);
 
     if (title === 'Create') {
-      await createNewUser(fullName, email, password, phone);
+      createNewUser(fullName, email, password, phone);
     } else {
-      await editUser(route.params.id, fullName, email, password, phone);
+      editUser(route.params.id, fullName, email, password, phone);
+      setFullname((prev) => (prev = ''));
+      setEmail((prev) => (prev = ''));
+      setPhone((prev) => (prev = ''));
+      setPassword((prev) => (prev = ''));
     }
+
     setIsLoading(false);
     navigation.goBack();
   };

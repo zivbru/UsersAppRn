@@ -26,7 +26,7 @@ const Welcome = ({navigation, authenticate}) => {
         if (user && user._data) {
           authenticate(user._data);
         } else {
-          setAlert('User does not exist. Please try again.', 'danger');
+          // alert('User does not exist. Please try again.');
         }
       }
 
@@ -49,7 +49,7 @@ const Welcome = ({navigation, authenticate}) => {
     } catch (error) {
       console.log(error);
       if (error) {
-        setAlert('Please try again! ' + error, 'danger');
+        alert('Please try again! ' + error);
       }
     }
   };

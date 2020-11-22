@@ -26,18 +26,18 @@ export default (state = initialState, action) => {
     case CREATE_NEW_USER:
       return {
         ...state,
-        users: [...users, action.user],
+        users: [...state.users, action.user],
       };
     case EDIT_USER:
-      const newUsers = users.fiter((user) => user.id === action.user.id);
+      state.users = state.users.filter((user) => user.id !== action.id);
       return {
         ...state,
-        users: [...newUsers, action.user],
+        users: [...state.users, action.user],
       };
     case DELETE_USER:
       return {
         ...state,
-        users: users.fiter((user) => user.id === action.user),
+        users: state.users.filter((user) => user.id !== action.user),
       };
     default:
       return state;

@@ -57,12 +57,13 @@ export const editUser = (id, fullName, email, password, phone) => async (
       phone,
     });
 
-    console.log(user.data);
     dispatch({
       type: EDIT_USER,
       user: user.data,
+      id,
     });
   } catch (error) {
+    console.log(error);
     alert(error.response.statusText, error.response.status);
   }
 };

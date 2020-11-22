@@ -13,15 +13,16 @@ const validateEmailPhonenumber = (phone) => {
 };
 
 export default validateFields = (email, phone, password) => {
-  if (!email || !validateEmail(email.toString())) {
+  if (!email || !validateEmail(email)) {
     return 'Mail format not valid!';
   }
-  if (!password || password.length < 6) {
-    return 'Password length must be greater than 6 characters';
+
+  if (!password || password.length <= 5) {
+    return 'Password length must be greater than 5 characters';
   }
 
   if (!phone || !validateEmailPhonenumber(phone)) {
-    return 'Mail format not valid!';
+    return 'Phone format not valid!';
   }
 
   return null;
@@ -31,8 +32,8 @@ export const validateEmailAndPassword = (email, password) => {
   if (!email || !validateEmail(email.toString())) {
     return 'Mail format not valid!';
   }
-  if (!password || password.length < 6) {
-    return 'Password length must be greater than 6 characters';
+  if (!password || password.length <= 5) {
+    return 'Password length must be greater than 5 characters';
   }
 
   return null;
