@@ -1,39 +1,54 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  ActivityIndicator,
-} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {fetchUserById} from '../../store/actions/users';
 import PropTypes from 'prop-types';
 import {AppStyles} from '../../components/UI/AppStyles';
 import Button from 'react-native-button';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+import {createNewUser, editUser} from '../../store/actions/users';
 
-const CreateNewUser = ({route, fetchUserById}) => {
+const CreateNewUser = ({route, navigation, createNewUser, editUser}) => {
+  const title = route.params.title;
   const selectedUser = useSelector((state) =>
     state.users.users.find((user) => user.id === route.params.id),
   );
-  const title = route.params.title;
-
   const [fullName, setFullname] = useState(
     selectedUser ? selectedUser.fullName : '',
   );
-
   const [phone, setPhone] = useState(selectedUser ? selectedUser.phone : '');
   const [email, setEmail] = useState(selectedUser ? selectedUser.email : '');
   const [password, setPassword] = useState(
     selectedUser ? selectedUser.password : '',
   );
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSave = () => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: title + ' User',
+    });
+  }, [navigation]);
+
+  const onSave = async () => {
+    setIsLoading(true);
     if (title === 'Create') {
+      await createNewUser(fullName, email, password, phone);
     } else {
+      console.log(title);
+      await editUser(route.params.id, fullName, email, password, phone);
     }
+    setIsLoading(false);
+    navigation.goBack();
   };
+
+  if (isLoading) {
+    return (
+      <View style={[styles.activityContainer, styles.horizontal]}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={[styles.title, styles.leftTitle]}>{title} User</Text>
@@ -82,8 +97,8 @@ const CreateNewUser = ({route, fetchUserById}) => {
         />
       </View>
       <Button
-        containerStyle={[styles.facebookContainer, {marginTop: 50}]}
-        style={styles.facebookText}
+        containerStyle={[styles.saveContainer, {marginTop: 50}]}
+        style={styles.saveText}
         onPress={() => onSave()}>
         Save
       </Button>
@@ -96,12 +111,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  activityContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: 50,
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
   title: {
     fontSize: AppStyles.fontSize.title,
     fontWeight: 'bold',
     color: AppStyles.color.tint,
-    marginTop: 20,
-    marginBottom: 20,
   },
   leftTitle: {
     alignSelf: 'stretch',
@@ -115,23 +138,13 @@ const styles = StyleSheet.create({
     fontSize: AppStyles.fontSize.content,
     color: AppStyles.color.text,
   },
-  loginContainer: {
-    width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.tint,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  loginText: {
-    color: AppStyles.color.white,
-  },
   placeholder: {
     fontFamily: AppStyles.fontName.text,
     color: 'red',
   },
   InputContainer: {
     width: AppStyles.textInputWidth.main,
-    marginTop: 30,
+    marginTop: 20,
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: AppStyles.color.grey,
@@ -143,24 +156,24 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     color: AppStyles.color.text,
   },
-  facebookContainer: {
+  saveContainer: {
     width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.tint,
+    backgroundColor: AppStyles.color.blue,
     borderRadius: AppStyles.borderRadius.main,
     padding: 10,
     marginTop: 30,
   },
-  facebookText: {
+  saveText: {
     color: AppStyles.color.white,
   },
 });
 
 CreateNewUser.propTypes = {
   fetchUserById: PropTypes.func.isRequired,
+  editUser: PropTypes.func.isRequired,
+  createNewUser: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  // selectedUser: state.users.selectedUser,
-});
-
-export default connect(null, {fetchUserById})(CreateNewUser);
+export default connect(null, {fetchUserById, createNewUser, editUser})(
+  CreateNewUser,
+);

@@ -14,7 +14,6 @@ const SignUp = ({register}) => {
 
   const onRegister = async () => {
     await register(fullName, phone, email, password);
-    //redirect to main screen
   };
 
   return (

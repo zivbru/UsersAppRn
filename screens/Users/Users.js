@@ -1,17 +1,25 @@
-import {useEffect} from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
+import {useEffect, useState} from 'react';
+import {StyleSheet, View, Text, Button, ActivityIndicator} from 'react-native';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {fetchAllUsers} from '../../store/actions/users';
+import {fetchAllUsers, deleteUser} from '../../store/actions/users';
 import {logout} from '../../store/actions/auth';
 import UserItem from '../UserItem/UserItem';
 import * as React from 'react';
 import {FlatList} from 'react-native-gesture-handler';
 
-const Users = ({fetchAllUsers, users: {users}, navigation, logout}) => {
+const Users = ({
+  fetchAllUsers,
+  users: {users},
+  navigation,
+  logout,
+  deleteUser,
+}) => {
   useEffect(() => {
     fetchAllUsers();
   }, [fetchAllUsers]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -27,7 +35,7 @@ const Users = ({fetchAllUsers, users: {users}, navigation, logout}) => {
             title="Add User"
             style={styles.addUserBtn}
             onPress={() =>
-              navigation.navigate('CreateNewUser', {title: 'Create'})
+              navigation.navigate('CreateOrEditUser', {title: 'Create'})
             }></Button>
         </View>
       ),
@@ -35,12 +43,24 @@ const Users = ({fetchAllUsers, users: {users}, navigation, logout}) => {
   }, [navigation]);
 
   const navigateEditOrCreatePage = (id) => {
-    console.log('id', id);
-    navigation.navigate('CreateNewUser', {title: 'Edit', id});
+    navigation.navigate('CreateOrEditUser', {title: 'Edit', id});
   };
 
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  const onDeleteUser = async (id) => {
+    setIsLoading(true);
+    await deleteUser(id);
+    setIsLoading(false);
+  };
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.heading}>
         <Text style={styles.text}>Email</Text>
         <Text style={styles.text}>Full Name</Text>
@@ -56,6 +76,7 @@ const Users = ({fetchAllUsers, users: {users}, navigation, logout}) => {
             <UserItem
               user={itemData.item}
               navigateEditPage={navigateEditOrCreatePage}
+              onDeleteUser={onDeleteUser}
             />
           )}
         />
@@ -67,10 +88,17 @@ const Users = ({fetchAllUsers, users: {users}, navigation, logout}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    marginVertical: 50,
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
   },
   heading: {
     flexDirection: 'row',
-    // margin: 10,
+
     marginTop: 10,
   },
   text: {
@@ -94,6 +122,7 @@ const styles = StyleSheet.create({
 Users.propTypes = {
   fetchAllUsers: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
+  deleteUser: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
 
@@ -101,4 +130,6 @@ const mapStateToProps = (state) => ({
   users: state.users,
 });
 
-export default connect(mapStateToProps, {fetchAllUsers, logout})(Users);
+export default connect(mapStateToProps, {fetchAllUsers, logout, deleteUser})(
+  Users,
+);

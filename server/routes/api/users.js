@@ -63,6 +63,7 @@ router.post('/', [], async (req, res) => {
       email: req.body.email,
       phone: req.body.phone,
       fullName: req.body.fullName,
+      password: req.body.password,
     };
 
     await usersTable.add(newUser);
@@ -92,6 +93,7 @@ router.post('/:id', [], async (req, res) => {
       email: req.body.email || user.email,
       phone: req.body.phone || user.phone,
       fullName: req.body.fullName || user.fullName,
+      password: req.body.password || user.password,
     };
 
     await usersTable.doc(req.params.id).set(newUser);

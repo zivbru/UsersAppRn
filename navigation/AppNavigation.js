@@ -39,7 +39,7 @@ export const UsersNavigator = () => {
     <UsersStackNavigator.Navigator screenOptions={defaultNavigationOptions}>
       <AuthStackNavigator.Screen name="Users" component={UsersScreen} />
       <AuthStackNavigator.Screen
-        name="CreateNewUser"
+        name="CreateOrEditUser"
         component={CreateNewUser}
       />
     </UsersStackNavigator.Navigator>

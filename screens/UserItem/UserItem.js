@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Button} from 'react-native';
 
-const UserItem = ({user, navigateEditPage}) => {
+const UserItem = ({user, navigateEditPage, onDeleteUser}) => {
   return (
     <View style={styles.contianer}>
       <View style={styles.userItem}>
@@ -14,7 +14,7 @@ const UserItem = ({user, navigateEditPage}) => {
             onPress={() => navigateEditPage(user.id)}></Button>
         </View>
         <View style={styles.deleteBtn}>
-          <Button title="X" onPress={() => navigateEditPage(user.id)}></Button>
+          <Button title="X" onPress={() => onDeleteUser(user.id)}></Button>
         </View>
       </View>
     </View>

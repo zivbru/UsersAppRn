@@ -25,6 +25,7 @@ export const register = (fullName, phone, email, password) => async (
       email,
       fullName,
       phone,
+      password,
     };
 
     await firestore().collection('users').doc(userId).set(data);
