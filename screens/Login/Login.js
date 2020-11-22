@@ -6,12 +6,12 @@ import {
   TextInput,
   View,
   KeyboardAvoidingView,
-  Alert,
   Button,
 } from 'react-native';
 import {login, facebooklogin} from '../../store/actions/auth';
 import PropTypes from 'prop-types';
 import validateEmailAndPassword from '../../utils/validation';
+
 const Login = ({login, facebooklogin}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
