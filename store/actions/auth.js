@@ -37,12 +37,12 @@ export const register = (fullName, phone, email, password) => async (
       AsyncStorage.setItem('@loggedInUserID:password', password);
       dispatch(authenticate(user._data));
     } else {
-      dispatch(setAlert('Something went wrong.', 'danger'));
+      alert('Something went wrong.');
     }
   } catch (error) {
     if (error) {
       console.log(error);
-      dispatch(setAlert(error, 'danger'));
+      alert(error);
     }
   }
 };
@@ -60,12 +60,12 @@ export const login = (email, password) => async (dispatch) => {
 
       dispatch(authenticate(user._data));
     } else {
-      dispatch(setAlert('User does not exist. Please try again.', 'danger'));
+      alert('User does not exist. Please try again.');
     }
   } catch (error) {
     console.log('error', error);
     if (error) {
-      dispatch(setAlert('Wrong Credentials', 'danger'));
+      alert('Wrong Credentials');
     }
   }
 };
@@ -113,7 +113,7 @@ export const facebooklogin = () => async (dispatch) => {
   } catch (error) {
     console.log(error);
     if (error) {
-      dispatch(setAlert('Please try again! ' + error, 'danger'));
+      alert('Please try again! ' + error);
     }
   }
 };
@@ -127,7 +127,7 @@ export const logout = () => async (dispatch) => {
   } catch (error) {
     console.log(error);
     if (error) {
-      dispatch(setAlert('Could Not logout!', 'danger'));
+      alert('Could Not logout!');
     }
   }
 };

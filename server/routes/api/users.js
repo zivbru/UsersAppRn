@@ -93,7 +93,7 @@ router.post('/:id', [], async (req, res) => {
       email: req.body.email || user.email,
       phone: req.body.phone || user.phone,
       fullName: req.body.fullName || user.fullName,
-      password: req.body.password || user.password,
+      password: req.body.password || user.password05,
     };
 
     await usersTable.doc(req.params.id).set(newUser);

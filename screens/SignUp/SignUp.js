@@ -5,6 +5,7 @@ import Button from 'react-native-button';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {register} from '../../store/actions/auth';
+import validateFields from '../../utils/validation';
 
 const SignUp = ({register}) => {
   const [fullName, setFullname] = useState();
@@ -12,8 +13,13 @@ const SignUp = ({register}) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const onRegister = async () => {
-    await register(fullName, phone, email, password);
+  const onRegister = () => {
+    const msg = validateFields(email, phone, password);
+    if (msg) {
+      alert(msg);
+      return;
+    }
+    register(fullName, phone, email, password);
   };
 
   return (

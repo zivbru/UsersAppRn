@@ -31,10 +31,10 @@ const CreateNewUser = ({route, navigation, createNewUser, editUser}) => {
 
   const onSave = async () => {
     setIsLoading(true);
+
     if (title === 'Create') {
       await createNewUser(fullName, email, password, phone);
     } else {
-      console.log(title);
       await editUser(route.params.id, fullName, email, password, phone);
     }
     setIsLoading(false);
@@ -88,7 +88,7 @@ const CreateNewUser = ({route, navigation, createNewUser, editUser}) => {
           style={styles.body}
           placeholder="Password"
           secureTextEntry={true}
-          minLength={5}
+          minLength={6}
           onChangeText={setPassword}
           value={password}
           autoCapitalize="none"

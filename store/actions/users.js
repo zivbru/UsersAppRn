@@ -16,13 +16,7 @@ export const fetchAllUsers = () => async (dispatch) => {
       users: users.data,
     });
   } catch (error) {
-    dispatch({
-      type: USERS_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
+    alert(error.response.statusText, error.response.status);
   }
 };
 
@@ -34,13 +28,7 @@ export const fetchUserById = (id) => async (dispatch) => {
       user: user.data,
     });
   } catch (error) {
-    dispatch({
-      type: USERS_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
+    alert(error.response.statusText, error.response.status);
   }
 };
 
@@ -55,13 +43,7 @@ export const createNewUser = (fullName, email, password, phone) => async (
       user: user.data,
     });
   } catch (error) {
-    dispatch({
-      type: USERS_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
+    alert(error.response.statusText, error.response.status);
   }
 };
 
@@ -82,13 +64,7 @@ export const editUser = (id, fullName, email, password, phone) => async (
       user: user.data,
     });
   } catch (error) {
-    dispatch({
-      type: USERS_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
+    alert(error.response.statusText, error.response.status);
   }
 };
 
@@ -101,12 +77,6 @@ export const deleteUser = (id) => async (dispatch) => {
       user: id,
     });
   } catch (error) {
-    dispatch({
-      type: USERS_ERROR,
-      payload: {
-        msg: error.response.statusText,
-        status: error.response.status,
-      },
-    });
+    alert(error.response.statusText, error.response.status);
   }
 };

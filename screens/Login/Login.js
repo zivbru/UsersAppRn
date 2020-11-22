@@ -11,17 +11,18 @@ import {
 } from 'react-native';
 import {login, facebooklogin} from '../../store/actions/auth';
 import PropTypes from 'prop-types';
-
+import validateEmailAndPassword from '../../utils/validation';
 const Login = ({login, facebooklogin}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onLoginPress = async () => {
-    if (email.length <= 0 || password.length <= 0) {
-      alert('Please fill out the required fields.');
+  const onLoginPress = () => {
+    const msg = validateEmailAndPassword(email, password);
+    if (msg) {
+      alert(msg);
       return;
     }
-    await login(email, password);
+    login(email, password);
   };
 
   const onLoginWithFacebookPress = async () => {

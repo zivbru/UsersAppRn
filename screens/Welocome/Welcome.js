@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 import Button from 'react-native-button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
-import {setAlert} from '../../store/actions/alert';
 import {authenticate} from '../../store/actions/auth';
 import PropTypes from 'prop-types';
 
